@@ -36,6 +36,7 @@ namespace CatalogadorDeArchivos
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.explorarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.guardarXMLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -98,16 +99,25 @@ namespace CatalogadorDeArchivos
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.explorarToolStripMenuItem});
+            this.explorarToolStripMenuItem,
+            this.guardarXMLToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(187, 29);
-            this.toolStripMenuItem1.Text = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(73, 29);
+            this.toolStripMenuItem1.Text = "Menu";
             // 
             // explorarToolStripMenuItem
             // 
             this.explorarToolStripMenuItem.Name = "explorarToolStripMenuItem";
             this.explorarToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.explorarToolStripMenuItem.Text = "Explorar";
+            this.explorarToolStripMenuItem.Click += new System.EventHandler(this.explorarToolStripMenuItem_Click);
+            // 
+            // guardarXMLToolStripMenuItem
+            // 
+            this.guardarXMLToolStripMenuItem.Name = "guardarXMLToolStripMenuItem";
+            this.guardarXMLToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.guardarXMLToolStripMenuItem.Text = "Guardar XML";
+            this.guardarXMLToolStripMenuItem.Click += new System.EventHandler(this.guardarXMLToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -139,6 +149,7 @@ namespace CatalogadorDeArchivos
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem explorarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem guardarXMLToolStripMenuItem;
     }
 }
 
