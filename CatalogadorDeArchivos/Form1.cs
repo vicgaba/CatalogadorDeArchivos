@@ -90,6 +90,7 @@ namespace CatalogadorDeArchivos
             if (path != "")
             {
                 textBoxArchivos.Text = GetFiles(path);
+                treeView1.Nodes.Add(GetFiles(path));
             }
         }
 
@@ -97,6 +98,35 @@ namespace CatalogadorDeArchivos
         {
             
 
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+                {
+
+                }
+
+        private void crearDirectoriosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            if (dialog.ShowDialog() != DialogResult.OK) { return; }
+
+            this.treeView1.Nodes.Add(TraverseDirectory(dialog.SelectedPath));
+        }
+        private TreeNode TraverseDirectory(string path)
+        {
+            TreeNode result = new TreeNode(path);
+            foreach (var subdirectory in Directory.GetDirectories(path))
+            {
+                result.Nodes.Add(TraverseDirectory(subdirectory));
+            }
+
+            return result;
         }
     }
 }
