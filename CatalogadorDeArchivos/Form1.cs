@@ -95,7 +95,7 @@ namespace CatalogadorDeArchivos
 
         private void guardarXMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            //
 
         }
     }
