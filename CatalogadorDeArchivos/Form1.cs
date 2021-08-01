@@ -40,8 +40,6 @@ namespace CatalogadorDeArchivos
             {
                 if (f is FileInfo)
                 {
-                   
-
                     FileInfo j = f as FileInfo;
                     str += "" + f.Name + " - " + j.Length + "\r\n";
 
@@ -56,15 +54,33 @@ namespace CatalogadorDeArchivos
                     XmlElement descripcion = doc.CreateElement("descripcion");
                     descripcion.AppendChild(doc.CreateTextNode(""));
                     archivo.AppendChild(descripcion);
+
+                    XmlElement tipo = doc.CreateElement("Tipo");
+                    tipo.AppendChild(doc.CreateTextNode(getFileType(f.Extension).ToString()));
+                    archivo.AppendChild(tipo);
+
                 }
                 else
                 {
-                    str += "\\" + f.Name + "\r\n";
+                    //str += "\\" + f.Name + "\r\n";
                 }
             }
 
             doc.Save("c:\\xml\\archivos.xml");
             return str;
+        }
+
+        private static string getFileType(string extension)
+        {
+            if (extension == ".pdf")
+            {
+                return "Portable document format";
+            } else if (extension == ".xls")
+            {
+                return "Documento de planilla de cálculos";
+            }
+            return "Desconocido";
+
         }
 
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
@@ -84,6 +100,7 @@ namespace CatalogadorDeArchivos
 
         private void explorarToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            treeView1.Nodes.Clear();
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.ShowDialog();
             string path = fbd.SelectedPath;
@@ -93,8 +110,7 @@ namespace CatalogadorDeArchivos
                 //treeView1.Nodes.Add(GetFiles(path));
             }
 
-            AppendDirectoriesToTreeNode(treeView1.Nodes.Add("Raiz"), path);
-            GetDisksInfo(listView1);
+            AppendDirectoriesToTreeNode(treeView1.Nodes.Add("Explorar"), path);
         }
 
         private void guardarXMLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -119,7 +135,10 @@ namespace CatalogadorDeArchivos
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             if (dialog.ShowDialog() != DialogResult.OK) { return; }
 
-            this.treeView1.Nodes.Add(TraverseDirectory(dialog.SelectedPath));
+            //con la línea siguiente invoco al dialogo de explorar y habilito la creación de directorios y los agrego al treeview
+            //this.treeView1.Nodes.Add(TraverseDirectory(dialog.SelectedPath));
+            //aquí solo llamo al explorador y agrego directorios
+            TraverseDirectory(dialog.SelectedPath);
         }
         private TreeNode TraverseDirectory(string path)
         {
@@ -164,14 +183,24 @@ namespace CatalogadorDeArchivos
                 {
                     ListViewItem lvi = new ListViewItem(d.Name);
                     lvi.SubItems.Add(d.VolumeLabel);
-                    lvi.SubItems.Add(d.AvailableFreeSpace.ToString());
-                    lvi.SubItems.Add(d.TotalSize.ToString());
-                    lvi.SubItems.Add(d.AvailableFreeSpace.ToString());
+                    //lvi.SubItems.Add((d.AvailableFreeSpace/1024/1024).ToString());
+                    lvi.SubItems.Add((d.TotalSize / 1024 / 1024).ToString());
+                    lvi.SubItems.Add((d.AvailableFreeSpace / 1024/1024).ToString());
                     listView.Items.Add(lvi);
 
                 }
             }
 
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            GetDisksInfo(listView1);
         }
     }
 }
