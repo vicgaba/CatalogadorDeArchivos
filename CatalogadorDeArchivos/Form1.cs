@@ -9,20 +9,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Data;
 
 namespace CatalogadorDeArchivos
 {
     public partial class Form1 : Form
     {
+        DataSet dataSet = new DataSet();
         public Form1()
         {
             InitializeComponent();
+
         }
 
+        private void GetArchivosXML()
+        {
+
+            dataSet.ReadXml(@"C:\xml\archivos.xml");
+
+            dataGridView1.DataSource = dataSet.Tables[0];
+        }
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
                 
         }
+
 
 
         public static string GetFiles(string path)
@@ -33,31 +44,40 @@ namespace CatalogadorDeArchivos
             XmlDocument doc = new XmlDocument();
             XmlElement raiz = doc.CreateElement("Archivos");
             doc.AppendChild(raiz);
-            XmlElement archivo = doc.CreateElement("archivo");
-            raiz.AppendChild(archivo);
+            
 
             foreach (FileSystemInfo f in dir.GetFileSystemInfos())
             {
                 if (f is FileInfo)
                 {
-                    FileInfo j = f as FileInfo;
-                    str += "" + f.Name + " - " + j.Length + "\r\n";
+                    if ((f.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
+                    {
+                        FileInfo j = f as FileInfo;
+                        str += "" + f.Name + " - " + j.Length + "\r\n";
 
-                    XmlElement nombre = doc.CreateElement("nombre");
-                    nombre.AppendChild(doc.CreateTextNode(f.Name));
-                    archivo.AppendChild(nombre);
+                        //listViewArchivos.Items.Add("valor1");
 
-                    XmlElement extension = doc.CreateElement("extension");
-                    extension.AppendChild(doc.CreateTextNode(f.Extension));
-                    archivo.AppendChild(extension);
+                        XmlElement archivo = doc.CreateElement("archivo");
+                        raiz.AppendChild(archivo);
 
-                    XmlElement descripcion = doc.CreateElement("descripcion");
-                    descripcion.AppendChild(doc.CreateTextNode(""));
-                    archivo.AppendChild(descripcion);
+                        XmlElement nombre = doc.CreateElement("nombre");
+                        nombre.AppendChild(doc.CreateTextNode(f.FullName));
+                        archivo.AppendChild(nombre);
 
-                    XmlElement tipo = doc.CreateElement("Tipo");
-                    tipo.AppendChild(doc.CreateTextNode(getFileType(f.Extension).ToString()));
-                    archivo.AppendChild(tipo);
+                        XmlElement extension = doc.CreateElement("extension");
+                        extension.AppendChild(doc.CreateTextNode(f.Extension));
+                        archivo.AppendChild(extension);
+
+                        XmlElement descripcion = doc.CreateElement("descripcion");
+                        descripcion.AppendChild(doc.CreateTextNode(""));
+                        archivo.AppendChild(descripcion);
+
+                        XmlElement tipo = doc.CreateElement("Tipo");
+                        tipo.AppendChild(doc.CreateTextNode(getFileType(f.Extension).ToString()));
+                        archivo.AppendChild(tipo);
+
+
+                    }
 
                 }
                 else
@@ -75,11 +95,20 @@ namespace CatalogadorDeArchivos
             if (extension == ".pdf")
             {
                 return "Portable document format";
-            } else if (extension == ".xls")
+            } 
+            if (extension == ".xls")
             {
                 return "Documento de planilla de cálculos";
             }
-            return "Desconocido";
+            if (extension == ".csv")
+            {
+                return "Comma separated values";
+            }
+            if (extension == ".jpg" || extension == ".png")
+            {
+                return "Archivo de imágen";
+            }
+                return "Desconocido";
 
         }
 
@@ -111,6 +140,7 @@ namespace CatalogadorDeArchivos
             }
 
             AppendDirectoriesToTreeNode(treeView1.Nodes.Add("Explorar"), path);
+            GetArchivosXML();
         }
 
         private void guardarXMLToolStripMenuItem_Click(object sender, EventArgs e)
@@ -127,7 +157,6 @@ namespace CatalogadorDeArchivos
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
                 {
-
                 }
 
         private void crearDirectoriosToolStripMenuItem_Click(object sender, EventArgs e)
@@ -201,6 +230,14 @@ namespace CatalogadorDeArchivos
         private void Form1_Load(object sender, EventArgs e)
         {
             GetDisksInfo(listView1);
+            GetArchivosXML();
+        }
+
+        private void treeView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string archivoName;
+            archivoName = this.Text;
+            Console.WriteLine(archivoName);
         }
     }
 }
